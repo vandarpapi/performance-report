@@ -1,0 +1,212 @@
+<title>Ad Budget Spend September MTD - 09-08-2026</title>
+<meta name="description" content="Cross-platform ad spend per client for September 2026, month to date. Data pulled 2026-09-08." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+<style>
+  :root { --bg:#f6f5f1; --surface:#ffffff; --surface-2:#faf9f5; --ink:#1d1f23; --ink-soft:#5b5d63; --ink-faint:#8b8d93; --border:#e4e2da; --border-strong:#d3d0c5; --accent:#a25a1e; --accent-soft:#f2e7db; --meta:#3646b8; --meta-bg:#eceef9; --google:#1c7748; --google-bg:#e6f2eb; --tiktok:#2a2a2e; --tiktok-bg:#ececed; --zero:#9a9ca2; color-scheme:light; }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#131418; --surface:#1c1e22; --surface-2:#212328; --ink:#ecebe4; --ink-soft:#a2a4ab; --ink-faint:#7f818a; --border:#30333a; --border-strong:#3d414a; --accent:#db9153; --accent-soft:#3a2b1c; --meta:#97a2ec; --meta-bg:#22273c; --google:#62bd8c; --google-bg:#1a2c22; --tiktok:#c9c9ce; --tiktok-bg:#2a2b2f; --zero:#74767d; color-scheme:dark; } }
+  :root[data-theme="dark"]{ --bg:#131418; --surface:#1c1e22; --surface-2:#212328; --ink:#ecebe4; --ink-soft:#a2a4ab; --ink-faint:#7f818a; --border:#30333a; --border-strong:#3d414a; --accent:#db9153; --accent-soft:#3a2b1c; --meta:#97a2ec; --meta-bg:#22273c; --google:#62bd8c; --google-bg:#1a2c22; --tiktok:#c9c9ce; --tiktok-bg:#2a2b2f; --zero:#74767d; color-scheme:dark; }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif; font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:56px 24px 96px; }
+  header.masthead{ border-bottom:2px solid var(--ink); padding-bottom:28px; margin-bottom:36px; }
+  .eyebrow{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 14px; }
+  h1{ font-family:"Fraunces",Georgia,serif; font-weight:500; font-size:clamp(2rem,5vw,3rem); line-height:1.08; letter-spacing:-0.01em; text-wrap:balance; margin:0 0 18px; }
+  .meta-line{ display:flex; flex-wrap:wrap; gap:8px 20px; font-size:14px; color:var(--ink-soft); }
+  .meta-line span{ display:inline-flex; align-items:center; gap:7px; }
+  .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; }
+  .note{ margin:24px 0 40px; padding:16px 18px; background:var(--surface-2); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:3px; font-size:13.5px; color:var(--ink-soft); }
+  .note strong{ color:var(--ink); font-weight:600; }
+  h2.section{ font-family:"Fraunces",Georgia,serif; font-weight:500; font-size:1.4rem; letter-spacing:-0.01em; margin:0 0 20px; padding-bottom:10px; border-bottom:1px solid var(--border-strong); }
+  .tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:48px; }
+  @media (max-width:720px){ .tiles{ grid-template-columns:repeat(2,1fr); } }
+  .tile{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:18px 16px 16px; }
+  .tile.total{ background:var(--ink); border-color:var(--ink); }
+  .tile.total .tile-label,.tile.total .tile-sub{ color:rgba(255,255,255,0.66); }
+  .tile.total .tile-value{ color:#fff; }
+  .tile-label{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 12px; }
+  .tile-value{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:1.55rem; font-weight:500; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .tile-sub{ font-size:12px; color:var(--ink-faint); margin-top:6px; }
+  .client{ background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:24px 24px 20px; margin-bottom:20px; }
+  .client.dormant{ background:var(--surface-2); border-style:dashed; }
+  .client-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
+  .client-name{ font-family:"Fraunces",Georgia,serif; font-weight:500; font-size:1.5rem; letter-spacing:-0.01em; margin:0; }
+  .client-alt{ color:var(--ink-faint); font-style:italic; font-size:1rem; }
+  .client-total{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:1.4rem; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .client-total small{ display:block; text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; }
+  .topspender{ display:inline-flex; align-items:center; gap:9px; margin:16px 0 4px; padding:7px 13px 7px 10px; background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); border-radius:999px; font-size:13px; color:var(--ink); }
+  .topspender svg{ flex:none; }
+  .topspender b{ font-weight:600; }
+  .topspender .amt{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:500; font-variant-numeric:tabular-nums; }
+  .topspender .plat{ color:var(--ink-soft); }
+  .platforms{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
+  @media (max-width:780px){ .platforms{ grid-template-columns:1fr; } }
+  .platform-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .tag{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:3px; }
+  .tag.meta{ background:var(--meta-bg); color:var(--meta); }
+  .tag.google{ background:var(--google-bg); color:var(--google); }
+  .tag.tiktok{ background:var(--tiktok-bg); color:var(--tiktok); }
+  table.camp{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.camp td{ padding:5px 0; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.camp td.amt{ text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; white-space:nowrap; padding-left:10px; color:var(--ink-soft); }
+  table.camp tr.sub td{ border-bottom:none; border-top:1.5px solid var(--border-strong); padding-top:7px; font-weight:600; color:var(--ink); }
+  table.camp tr.sub td.amt{ color:var(--ink); }
+  .emptycell{ font-size:12.5px; color:var(--zero); font-style:italic; padding:6px 0; }
+  .budget-box{ margin-top:20px; padding:14px 16px; border:1px dashed var(--border-strong); border-radius:4px; background:var(--surface-2); display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; }
+  .budget-box .bl{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); }
+  .budget-fill{ flex:1; min-width:120px; border-bottom:1.5px solid var(--border-strong); height:20px; }
+  .budget-box .hint{ font-size:12px; color:var(--ink-faint); flex-basis:100%; }
+  .matrix-scroll{ overflow-x:auto; border:1px solid var(--border); border-radius:5px; }
+  table.matrix{ width:100%; border-collapse:collapse; font-size:13px; min-width:560px; }
+  table.matrix th,table.matrix td{ padding:10px 14px; text-align:right; }
+  table.matrix th:first-child,table.matrix td:first-child{ text-align:left; }
+  table.matrix thead th{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); background:var(--surface-2); border-bottom:1px solid var(--border-strong); }
+  table.matrix tbody td{ border-bottom:1px solid var(--border); font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; color:var(--ink-soft); }
+  table.matrix tbody td:first-child{ font-family:"IBM Plex Sans",sans-serif; color:var(--ink); }
+  table.matrix tbody tr:hover td{ background:var(--surface-2); }
+  table.matrix tbody td.zero{ color:var(--zero); }
+  table.matrix tfoot td{ border-top:2px solid var(--ink); font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:600; font-variant-numeric:tabular-nums; color:var(--ink); }
+  table.matrix tfoot td:first-child{ font-family:"IBM Plex Sans",sans-serif; }
+  footer{ margin-top:48px; padding-top:20px; border-top:1px solid var(--border); font-size:12.5px; color:var(--ink-faint); }
+  footer p{ margin:4px 0; }
+</style>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Digital Advertising / Spend Ledger</p>
+    <h1>Ad Budget Spend, September MTD</h1>
+    <p class="eyebrow" style="margin:10px 0 0;color:var(--accent)">Data pulled 09-08-2026</p>
+    <div class="meta-line">
+      <span><span class="dot"></span>Period: September 2026, month to date</span>
+      <span><span class="dot"></span>Window: 2026-09-01 to 2026-09-08</span>
+      <span><span class="dot"></span>Pulled: 2026-09-08</span>
+      <span><span class="dot"></span>Currency: native per account (all accounts are EUR)</span>
+    </div>
+  </header>
+  <div class="note"><strong>How to read this.</strong> The reporting window runs from the first of the month to the pull date, so early in the month it covers only a few days and figures show pacing, not a full month. Only campaigns that recorded spend in the window are listed. Active campaigns with zero spend, paused campaigns, disabled accounts, and platforms with no account for a client are noted and not itemized. Data comes from the Ads MCP (Google Ads and Meta Ads) and the TikTok Ads MCP. Campaign names are reproduced as stored, with long dashes normalized to hyphens.</div>
+  <h2 class="section">All platforms combined</h2>
+  <div class="tiles" id="tiles"></div>
+  <h2 class="section">Spend by client</h2>
+  <div id="clients"></div>
+  <h2 class="section">Client by platform matrix</h2>
+  <div class="matrix-scroll"><table class="matrix" id="matrix"></table></div>
+  <footer>
+    <p>Source: Ads MCP (Google Ads, Meta Ads) and TikTok Ads MCP. Synchronous campaign-level reports.</p>
+    <p>Generated 2026-09-08. Spend values are as reported by each platform at pull time and can still settle.</p>
+    <p>Accounts with no recorded spend in the window: Someho.</p>
+  </footer>
+</div>
+<script>
+  const fmt = (n) => "€" + n.toLocaleString("en-IE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // REPLACE this array each run. One object per client, alphabetical.
+  // Per platform key (meta, google, tiktok): { rows: [[campaignName, spend], ...] } sorted by spend desc, or { note: "one line" }.
+  // Optional client fields: alt (string by the name), dormant (true when cross-platform total is 0),
+  // metaNote/googleNote/tiktokNote (extra note under that column), budget (string, agreed monthly budget from the roster; omit when blank).
+  const data = [
+    { name: "ADAMS Wereldkeuken",
+      google: { rows: [ ["PMAX NL", 171.87], ["PMAX EN", 57.28], ["PMAX DE", 7.16], ["PMAX ES", 6.98], ["PMAX IT", 2.52] ] },
+      meta: { note: "No account" },
+      tiktok: { note: "No account" } },
+    { name: "Anno Asia",
+      google: { rows: [ ["Anno PMAX EN", 206.75], ["Anno PMAX NL", 204.06], ["Anno PMAX DE", 64.94], ["Anno PMAX FR", 44.26], ["Anno PMAX ES", 31.31], ["Anno PMAX IT", 14.46] ] },
+      meta: { rows: [ ["Bookings - Schedule conversie", 174.36], ["Post Boost IG", 17.07], ["Broad Restaurant", 14.47] ] },
+      tiktok: { rows: [ ["Book Reservations", 230.54] ] },
+      budget: "€4,000" },
+    { name: "Deni Stukadoor",
+      google: { rows: [ ["Search Leads Manual", 81.97] ] },
+      meta: { note: "No account" },
+      tiktok: { note: "No account" } },
+    { name: "Drukkerij van der Heijden",
+      google: { rows: [ ["Copyshop | search", 83.54], ["Drukkerij PMAX", 14.00], ["Drukkerij | search", 12.97] ] },
+      meta: { note: "No account" },
+      tiktok: { note: "No account" } },
+    { name: "Elmaas",
+      google: { rows: [ ["Search Ads", 246.48], ["Brand - Elmaas NL", 8.25] ] },
+      meta: { rows: [ ["Leads - Website", 235.61], ["Vacature Werkvoorbereider | Elmaas", 44.99], ["Leads - Retargetting", 22.86] ] },
+      tiktok: { note: "No account" } },
+    { name: "Foodhall Scheveningen",
+      google: { rows: [ ["PMAX DE", 57.79], ["PMAX NL", 46.95], ["PMAX INT", 42.38], ["Zakelijk SEA", 30.90], ["PMAX FR", 22.19], ["PMAX IT", 7.12] ] },
+      meta: { rows: [ ["Awareness Local", 55.99], ["Post Boost", 35.33] ] },
+      tiktok: { note: "No account" } },
+    { name: "Genki Garden",
+      google: { rows: [ ["Genki PMAX", 33.46] ] },
+      meta: { note: "Account disabled, no spend" },
+      tiktok: { note: "No account" } },
+    { name: "Glasservice Noord",
+      google: { rows: [ ["Glas verduurzaming", 312.92] ] },
+      meta: { note: "Excluded from Meta reporting per exclusion policy." },
+      tiktok: { note: "No account" } },
+    { name: "Hotspot Fishing",
+      google: { rows: [ ["Default Shopping", 17.69] ] },
+      meta: { note: "No account" },
+      tiktok: { note: "No account" } },
+    { name: "Just Dai",
+      google: { note: "No account" },
+      meta: { rows: [ ["AI - Acquisition Prospecting Lookalike Campaign - Master Campaign-2020-07-16 - HB NO SALE", 479.12], ["Advantage+ shopping campaign 01/15/2026 - Copy", 440.13], ["Retargeting - Advantage+ shopping campaign 01/15/2026", 14.82] ] },
+      tiktok: { note: "No account" } },
+    { name: "Madam Chen",
+      google: { rows: [ ["PMAX Visits weekly", 122.13], ["PMAX Visits weekend", 20.55] ] },
+      meta: { rows: [ ["Post Boost", 41.18], ["Karaoke Nights", 35.14], ["Local Store Awareness", 20.74] ] },
+      tiktok: { rows: [ ["Followers Aug-Sept '26", 70.46] ] } },
+    { name: "Oran Aesthetics",
+      google: { rows: [ ["Medisch Afvallen", 110.90], ["Morpheus 8", 52.35], ["Profhilo", 45.16], ["Lipfillers", 37.75], ["Liquid Facelift EN", 26.13], ["Oran Brand", 25.77], ["Shop visits", 15.45], ["Rejuran", 0.26] ] },
+      meta: { rows: [ ["Conversion - Enagement", 219.96], ["Medisch Afvallen", 110.56], ["PRP - Huid en Haar", 108.24], ["Rejuran - Huidherstel", 106.09], ["Spierontspanner Introductie - Nieuwe Generatie", 68.23], ["Combideal Viscoderm + Rimpelbehandeling", 66.40], ["Viscoderm Hydrobooster - Actie", 40.47], ["Retargetting", 34.40], ["Stylage Hydromax - Actie", 29.55], ["Post Boost", 9.59] ] },
+      tiktok: { note: "No account" },
+      budget: "€5,000" },
+    { name: "Oriental Noordwijkerhout",
+      google: { rows: [ ["PMAX NL", 100.98], ["PMAX DE", 57.24], ["PMAX EN", 35.47] ] },
+      meta: { note: "Account disabled, no spend" },
+      tiktok: { note: "No account" } },
+    { name: "Restaurant ChouChou",
+      google: { rows: [ ["PMAX NL", 65.00], ["PMAX EN", 35.85], ["PMAX DE", 35.81] ] },
+      meta: { rows: [ ["Engagement", 35.47], ["Awareness", 34.73], ["Post Boost IG", 22.06] ] },
+      tiktok: { rows: [ ["Followers Aug-Sept 2026", 55.38] ] } },
+    { name: "Restaurant De Gouden Wok Zuiderpark",
+      google: { rows: [ ["Restaurant PMAX NL", 260.43], ["Restaurant PMAX EN", 96.34], ["Concurrent Based", 8.32] ] },
+      meta: { rows: [ ["Post Boost", 24.47], ["Dice Challenge - Engagement", 8.86], ["Dice Challenge - Awareness", 6.00] ] },
+      tiktok: { rows: [ ["Followers August-Sept '26", 46.63], ["Dice Challenge / Followers June '26", 10.65] ] } },
+    { name: "Restaurant Guru",
+      google: { rows: [ ["Restaurant PMAX NL/EN Weekdays", 242.59], ["Restaurant PMAX NL/EN Weekend", 112.91], ["Restaurant PMAX DE", 73.97], ["Restaurant Search NL/EN", 31.62], ["Restaurant PMAX FR", 22.37], ["Restaurant PMAX ES", 20.65], ["Restaurant Search DE", 5.52] ] },
+      meta: { note: "Account active, no campaigns with spend" },
+      tiktok: { rows: [ ["Followers August '26", 59.47] ] },
+      budget: "€2,000" },
+    { name: "Restaurant Landgoed Groenendaal",
+      google: { rows: [ ["Zalen", 93.69], ["Restaurant Lokaal", 71.79], ["Bruiloft", 37.09] ] },
+      meta: { rows: [ ["Reach", 35.28], ["Post Boost IG", 24.20] ] },
+      tiktok: { note: "No account" } },
+    { name: "Restaurant Lavash",
+      google: { rows: [ ["L'albero NL", 51.45], ["Restaurant PMAX - Pepino DE", 29.91], ["Restaurant PMAX - Pepino EN", 29.83], ["Restaurant PMAX - Pepino ES", 28.90], ["Restaurantbezoeken PMAX - Lavash EN", 22.73], ["L'albero ES", 15.18], ["Restaurantbezoeken PMAX - Lavash ES", 15.14], ["Restaurantbezoeken PMAX - Lavash IT", 14.85], ["L'albero FR", 14.81], ["Restaurant PMAX - Pepino FR", 14.80], ["Restaurantbezoeken PMAX - Lavash DE", 14.78], ["Restaurant PMAX - Pepino IT", 14.74], ["Restaurantbezoeken PMAX - Lavash NL", 14.70], ["L'albero IT", 14.66], ["L'albero EN", 14.48], ["L'albero DE", 14.27], ["Restaurantbezoeken PMAX - Lavash FR", 14.12] ] },
+      meta: { rows: [ ["Post Boost IG", 23.58], ["Restaurant Awareness", 10.21] ] },
+      tiktok: { rows: [ ["Followers July-Sept '26", 48.58] ] } },
+    { name: "SKT",
+      google: { rows: [ ["Search General", 2165.61], ["PMax Bouwtekening NL", 1194.91], ["Construction Calculation", 802.61], ["SKT Brand", 66.23], ["Dakkapel", 25.23], ["PMax Bouwtekening EN", 4.83] ] },
+      meta: { rows: [ ["Leads", 243.93], ["Giveaway '26", 14.46] ] },
+      tiktok: { note: "No account" } },
+    { name: "Someho",
+      google: { note: "No account" },
+      meta: { note: "Account active, no campaigns with spend" },
+      tiktok: { note: "No account" },
+      dormant: true },
+    { name: "Spainora",
+      google: { rows: [ ["Top 5 EN", 36.23], ["Display Leads", 17.25], ["Spainora NL", 5.96], ["Top 5 DE", 3.57] ] },
+      meta: { rows: [ ["Projects Pilot - New Builds", 229.28], ["Spainora - DPREA Retargetting", 7.18] ] },
+      tiktok: { note: "No account" } },
+    { name: "Tammy Nails",
+      google: { rows: [ ["Shopping PMAX", 455.83] ] },
+      meta: { rows: [ ["Advantage - Gellak Campaign NL", 461.74], ["Advantage - Gellak Campaign - DE", 69.91] ] },
+      tiktok: { note: "No account" } },
+  ];
+  const PLATFORMS = [ { key:"meta", label:"Meta Ads" }, { key:"google", label:"Google Ads" }, { key:"tiktok", label:"TikTok Ads" } ];
+  const platName = { meta:"Meta Ads", google:"Google Ads", tiktok:"TikTok Ads" };
+  const subtotal = (p) => (p && p.rows) ? p.rows.reduce((s,r)=>s+r[1],0) : 0;
+  let grand = { meta:0, google:0, tiktok:0 };
+  data.forEach((c) => { c._sub={}; let top=null; PLATFORMS.forEach(({key})=>{ const st=subtotal(c[key]); c._sub[key]=st; grand[key]+=st; if(c[key]&&c[key].rows){ c[key].rows.forEach((r)=>{ if(!top||r[1]>top.amt) top={name:r[0],amt:r[1],plat:key}; }); } }); c._total=c._sub.meta+c._sub.google+c._sub.tiktok; c._top=top; });
+  const grandTotal = grand.meta+grand.google+grand.tiktok;
+  const withSpend = data.filter((c)=>c._total>0).length;
+  document.getElementById("tiles").innerHTML = [ {l:"Meta Ads",v:grand.meta,s:"Facebook and Instagram"}, {l:"Google Ads",v:grand.google,s:"Search, PMAX, Shopping, Display"}, {l:"TikTok Ads",v:grand.tiktok,s:"Advertiser accounts"}, {l:"All platforms",v:grandTotal,s:withSpend+" of "+data.length+" clients with spend",total:true} ].map((t)=>`<div class="tile${t.total?" total":""}"><p class="tile-label">${t.l}</p><div class="tile-value">${fmt(t.v)}</div><div class="tile-sub">${t.s}</div></div>`).join("");
+  const crown = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4.5 3L12 5l4.5 6L21 8l-1.7 10H4.7L3 8z"/></svg>';
+  function platformCol(c,key,label){ const p=c[key]; let inner; if(p&&p.rows){ const rows=p.rows.map((r)=>`<tr><td>${r[0]}</td><td class="amt">${fmt(r[1])}</td></tr>`).join(""); inner=`<table class="camp"><tbody>${rows}<tr class="sub"><td>Subtotal</td><td class="amt">${fmt(subtotal(p))}</td></tr></tbody></table>`; } else { inner=`<div class="emptycell">${(p&&p.note)?p.note:"No spend in the window."}</div>`; } const extra=c[key+"Note"]?`<div class="emptycell">${c[key+"Note"]}</div>`:""; return `<div class="platform-col"><div class="platform-head"><span class="tag ${key}">${label}</span></div>${inner}${extra}</div>`; }
+  document.getElementById("clients").innerHTML = data.map((c)=>{ const top=c._top?`<div class="topspender"><span style="color:var(--accent)">${crown}</span><span>Top spender: <b>${c._top.name}</b> <span class="plat">/ ${platName[c._top.plat]}</span></span><span class="amt">${fmt(c._top.amt)}</span></div>`:""; const cols=PLATFORMS.map((p)=>platformCol(c,p.key,p.label)).join(""); const bud=c.budget?`<span class="amt" style="font-family:'IBM Plex Mono',monospace;font-weight:500">${c.budget}</span><span class="hint">Agreed monthly digital advertising budget for this client.</span>`:`<span class="budget-fill"></span><span class="hint">Fill in once the client confirms their monthly digital advertising budget. Left blank until then.</span>`; return `<div class="client${c._total===0?" dormant":""}"><div class="client-head"><h3 class="client-name">${c.name}${c.alt?` <span class="client-alt">${c.alt}</span>`:""}</h3><div class="client-total">${fmt(c._total)}<small>Cross-platform, month to date</small></div></div>${top}<div class="platforms">${cols}</div><div class="budget-box"><span class="bl">Proposed monthly cross-platform budget</span>${bud}</div></div>`; }).join("");
+  const mrows = data.map((c)=>`<tr><td>${c.name}</td><td class="${c._sub.meta?"":"zero"}">${fmt(c._sub.meta)}</td><td class="${c._sub.google?"":"zero"}">${fmt(c._sub.google)}</td><td class="${c._sub.tiktok?"":"zero"}">${fmt(c._sub.tiktok)}</td><td>${fmt(c._total)}</td></tr>`).join("");
+  document.getElementById("matrix").innerHTML = `<thead><tr><th>Client</th><th>Meta Ads</th><th>Google Ads</th><th>TikTok Ads</th><th>Total</th></tr></thead><tbody>${mrows}</tbody><tfoot><tr><td>All clients</td><td>${fmt(grand.meta)}</td><td>${fmt(grand.google)}</td><td>${fmt(grand.tiktok)}</td><td>${fmt(grandTotal)}</td></tr></tfoot>`;
+</script>
