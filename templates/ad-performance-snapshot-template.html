@@ -1,0 +1,467 @@
+<!--
+  AD PERFORMANCE SNAPSHOT — REUSABLE TEMPLATE
+  ============================================
+  This is the locked design system for the "Daily Ads Health Check" report,
+  established Sep 5, 2026. Every future run should start from this file
+  rather than redesigning from scratch.
+
+  HOW TO USE THIS TEMPLATE FOR A NEW RUN:
+    1. Copy this file's full contents into a fresh scratchpad .html file
+       (do not edit this template file itself).
+    2. Update the <title> tag and the masthead <h1>/<div class="sub"> with
+       the new run's date and window description.
+    3. Replace the GOOGLE, META, and TIKTOK data arrays below with the new
+       day's pulled data, following the exact field schema documented in
+       each array's comment block. Keep field names identical — the render
+       functions (googleCard/metaCard/tiktokCard) depend on them.
+    4. Update the platform-meta strings (account counts / exclusions) and
+       the stat-row account counts to match the new day's account list.
+    5. Recompute the "Worth a look" flags (2-4 bullets) for the new data
+       and replace the #flagList content. Mark any row that backs a flag
+       with `flag:true` (Google/Meta) so it gets the red highlight.
+    6. Do NOT change the CSS tokens, fonts, layout structure, or card/table
+       markup — that consistency is the point of this template.
+    7. Publish as a NEW Claude artifact (a fresh file path) — never redeploy
+       a prior day's artifact URL. Title it "Ad Performance Snapshot — <Month D, YYYY>".
+
+  DESIGN SYSTEM SUMMARY:
+    - Type: Libre Franklin (headings/body) + IBM Plex Mono (all numeric
+      figures — spend, conversions, CTR, cost/result — tabular-nums).
+    - Palette: cool slate-blue neutrals + per-platform accents
+      (Google = blue, Meta = violet, TikTok = teal). Full light/dark theme
+      support via CSS custom-property tokens (see :root / prefers-color-scheme
+      / [data-theme] blocks below — do not touch this structure).
+    - Layout: masthead (eyebrow + title + stat tiles) → one <section> per
+      platform, each a card grid (one card per account) → closing
+      "Worth a look" flags callout.
+    - Row conventions: cost-per-result is always a colored pill (never a
+      bare number); paused-but-delivering rows get an amber highlight +
+      "Paused, still spending" tag; flagged anomaly rows get a red
+      highlight + "Check this" tag; whole accounts with zero delivery
+      collapse to a single muted line instead of an empty card.
+    - Long campaign names: td.name relies on max-width:1px paired with
+      overflow-wrap/word-break so names wrap inside their own cell instead
+      of overlapping the Spend/Conv/CTR columns. Do not strip the
+      overflow-wrap/word-break declarations from td.name — that regression
+      is what causes name text to visually collide with neighboring cells.
+
+  Everything below the closing comment is real, working markup — the
+  example data currently in GOOGLE/META/TIKTOK is illustrative (3 sample
+  accounts per platform) so the page renders as a working preview. Swap it
+  for the day's real pull before publishing.
+-->
+<title>Ad Performance Snapshot — [Month D, YYYY]</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6fa;
+  --surface:#ffffff;
+  --surface-2:#eef1f6;
+  --border:#dde2ea;
+  --text:#171b24;
+  --text-muted:#5c6577;
+  --text-faint:#8991a3;
+  --accent:#3455d1;
+  --accent-soft:#e8ecfc;
+  --google:#3d6fe0;
+  --google-soft:#e7edfc;
+  --meta:#7c5cd6;
+  --meta-soft:#efe9fc;
+  --tiktok:#0f9e8f;
+  --tiktok-soft:#e2f7f4;
+  --good:#1f9d55;
+  --warn:#b3760e;
+  --warn-soft:#fbf0da;
+  --critical:#c8433f;
+  --critical-soft:#fbe6e5;
+  --shadow: 0 1px 2px rgba(23,27,36,.04), 0 8px 24px -12px rgba(23,27,36,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f131a;
+    --surface:#161b24;
+    --surface-2:#1c2230;
+    --border:#2a3142;
+    --text:#e8ecf3;
+    --text-muted:#9aa3b5;
+    --text-faint:#6d7789;
+    --accent:#7c96ff;
+    --accent-soft:#232c4d;
+    --google:#7c96ff;
+    --google-soft:#202a4a;
+    --meta:#b39cff;
+    --meta-soft:#2a2447;
+    --tiktok:#3fd6c4;
+    --tiktok-soft:#123833;
+    --good:#3fcd7e;
+    --warn:#e3ad48;
+    --warn-soft:#3a2f14;
+    --critical:#f0716d;
+    --critical-soft:#3d1f1e;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f131a;
+  --surface:#161b24;
+  --surface-2:#1c2230;
+  --border:#2a3142;
+  --text:#e8ecf3;
+  --text-muted:#9aa3b5;
+  --text-faint:#6d7789;
+  --accent:#7c96ff;
+  --accent-soft:#232c4d;
+  --google:#7c96ff;
+  --google-soft:#202a4a;
+  --meta:#b39cff;
+  --meta-soft:#2a2447;
+  --tiktok:#3fd6c4;
+  --tiktok-soft:#123833;
+  --good:#3fcd7e;
+  --warn:#e3ad48;
+  --warn-soft:#3a2f14;
+  --critical:#f0716d;
+  --critical-soft:#3d1f1e;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Libre Franklin",system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:14px;
+  line-height:1.45;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;}
+
+.wrap{max-width:1400px; margin:0 auto; padding:32px 28px 80px;}
+
+/* ---------- header ---------- */
+.masthead{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:20px; padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--border);
+}
+.masthead h1{
+  margin:0 0 6px; font-size:28px; font-weight:800; letter-spacing:-.01em; text-wrap:balance;
+}
+.masthead .sub{color:var(--text-muted); font-size:14px; max-width:56ch;}
+.masthead .eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin-bottom:8px;
+}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap;}
+.stat-tile{
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:12px 16px; min-width:140px; box-shadow:var(--shadow);
+  border-top:3px solid var(--tile-color, var(--accent));
+}
+.stat-tile .label{font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-faint); font-weight:600;}
+.stat-tile .value{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600; margin-top:3px;}
+.stat-tile .value small{font-size:11px; color:var(--text-muted); font-weight:500; margin-left:4px;}
+
+/* ---------- platform section ---------- */
+.platform{margin-top:40px;}
+.platform-head{
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:16px;
+}
+.platform-badge{
+  font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:12px; letter-spacing:.06em;
+  text-transform:uppercase; padding:4px 10px; border-radius:6px; color:var(--pf-color); background:var(--pf-soft);
+}
+.platform-head h2{margin:0; font-size:19px; font-weight:700;}
+.platform-meta{color:var(--text-faint); font-size:12.5px; font-family:"IBM Plex Mono",monospace;}
+
+.grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(400px,1fr)); gap:16px;
+}
+
+/* ---------- account card ---------- */
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:16px 16px 12px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:10px;
+}
+.card.empty-card{padding:14px 16px; gap:4px;}
+.card-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+.card-head h3{margin:0; font-size:15.5px; font-weight:700; line-height:1.3;}
+.card-head .acc-id{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--text-faint); display:block; margin-top:2px;}
+.card-total{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:14px; white-space:nowrap;}
+.card-total small{display:block; font-size:9.5px; color:var(--text-faint); font-weight:600; letter-spacing:.05em; text-transform:uppercase; text-align:right;}
+
+.zero-line{color:var(--text-muted); font-size:13px; font-style:italic;}
+
+table.camp{width:100%; border-collapse:collapse; font-size:12.5px;}
+table.camp thead th{
+  text-align:left; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint);
+  font-weight:600; padding:0 6px 6px; border-bottom:1px solid var(--border);
+}
+table.camp thead th.num, table.camp td.num{text-align:right;}
+table.camp tbody tr td{padding:7px 6px; border-bottom:1px solid var(--surface-2); vertical-align:top;}
+table.camp tbody tr:last-child td{border-bottom:none;}
+table.camp td.name{font-weight:500; max-width:1px; overflow-wrap:break-word; word-break:break-word; hyphens:auto;}
+table.camp td.name .tag{
+  display:inline-block; font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  padding:1px 5px; border-radius:4px; margin-top:3px;
+}
+tr.row-paused{background:var(--warn-soft);}
+tr.row-paused td.name .tag.paused{background:var(--warn); color:#1a1200;}
+tr.row-flag{background:var(--critical-soft);}
+tr.row-flag td.name .tag.flag{background:var(--critical); color:#2a0d0c;}
+td.cpr .pill{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:12.5px;
+  padding:2px 8px; border-radius:20px; background:var(--pf-soft); color:var(--pf-color);
+}
+tr.row-paused td.cpr .pill, tr.row-flag td.cpr .pill{background:transparent; color:var(--text); padding:2px 0;}
+td.cpr .pill.dash{background:transparent; color:var(--text-faint); font-weight:500;}
+.result-label{display:block; font-size:10px; color:var(--text-faint); font-weight:500;}
+
+.no-delivery{
+  margin-top:2px; padding-top:9px; border-top:1px dashed var(--border);
+  font-size:11.5px; color:var(--text-faint); line-height:1.6;
+}
+.no-delivery b{color:var(--text-muted); font-weight:600; font-size:10px; letter-spacing:.05em; text-transform:uppercase; display:block; margin-bottom:3px;}
+.no-delivery .p{color:var(--warn); font-weight:600;}
+
+.tt-type{
+  display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; letter-spacing:.02em;
+}
+.tt-type.followers{background:var(--tiktok-soft); color:var(--tiktok);}
+.tt-type.booking{background:var(--accent-soft); color:var(--accent);}
+
+/* ---------- flags ---------- */
+.flags{
+  margin-top:44px; border:1px solid var(--critical); border-radius:12px; background:var(--critical-soft);
+  padding:20px 22px;
+}
+.flags h2{margin:0 0 12px; font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px;}
+.flags ul{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:9px;}
+.flags li{font-size:13.5px; line-height:1.55;}
+.flags b{font-weight:700;}
+.flags .fig{font-family:"IBM Plex Mono",monospace; font-weight:600;}
+
+footer{margin-top:44px; padding-top:16px; border-top:1px solid var(--border); color:var(--text-faint); font-size:11.5px;}
+
+@media (max-width:520px){
+  .wrap{padding:22px 14px 60px;}
+  .masthead h1{font-size:23px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <div class="eyebrow">Daily Ads Health Check</div>
+      <h1>Ad Performance Snapshot</h1>
+      <!-- Update this line's date + any window/exclusion notes each run -->
+      <div class="sub">[Month D, YYYY] · Google Ads &amp; Meta Ads over the trailing 30 days, TikTok Ads over the trailing 7 days · every campaign with delivery, cost per result called out on every row.</div>
+    </div>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+
+  <section class="platform" id="platform-google"></section>
+  <section class="platform" id="platform-meta"></section>
+  <section class="platform" id="platform-tiktok"></section>
+
+  <div class="flags">
+    <h2>⚑ Worth a look</h2>
+    <ul id="flagList"></ul>
+  </div>
+
+  <!-- Update exclusion notes each run to match that day's account scope -->
+  <footer>Google Ads: all accounts except Fire Defence. Meta Ads: excludes Glasservice Noord, and only the current Oran (Oran Aesthetics Ads 2023) and Just Dai (Just Dai 2026) accounts among their duplicates. TikTok Ads: all authorized advertiser accounts. All figures in EUR.</footer>
+
+</div>
+
+<script>
+const fmtMoney = v => v==null ? '—' : '€' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtNum = v => v==null ? '—' : (Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+const fmtCtr = v => v==null ? '—' : v.toFixed(2)+'%';
+
+/* =================================================================
+   GOOGLE — one object per account. Replace with the day's real pull.
+   Schema per account: { name, id, campaigns:[...], noDelivery:[...] }
+   Schema per campaign: { name, spend, conv, cpc (cost/conv, null if
+     0 conversions), clicks, ctr, paused:true (optional, amber
+     highlight for a paused-but-delivering row), flag:true (optional,
+     red highlight — pair with a "Worth a look" bullet) }
+   noDelivery: array of { n: "Campaign name", p: true|false } — p=true
+     renders "(paused)" after the name.
+   ================================================================= */
+const GOOGLE = [
+{name:"[Example Account A]", id:"000-000-0000", campaigns:[
+  {name:"PMAX NL", spend:412.30, conv:560.00, cpc:0.74, clicks:1290, ctr:3.10},
+  {name:"Search Brand", spend:88.10, conv:42.00, cpc:2.10, clicks:210, ctr:9.40},
+], noDelivery:[{n:"Winter Promo",p:true}]},
+{name:"[Example Account B]", id:"000-000-0001", campaigns:[
+  {name:"PMAX EN", spend:301.55, conv:298.00, cpc:1.01, clicks:940, ctr:2.85},
+  {name:"Legacy Campaign", spend:12.40, conv:1.00, cpc:12.40, clicks:22, ctr:5.10, flag:true, flagNote:"[why this row is flagged]"},
+], noDelivery:[]},
+{name:"[Example Account C]", id:"000-000-0002", campaigns:[], noDelivery:[{n:"Old Search",p:true},{n:"Unused PMAX",p:false}]},
+];
+
+/* =================================================================
+   META — one object per account. Replace with the day's real pull.
+   Schema per account: { name, id, campaigns:[...] } OR
+     { name, id, campaigns:[], zeroDelivery:true } for a whole account
+     with no delivery this window (renders as a single muted line).
+   Schema per campaign: { name, spend, result, resultLabel (e.g.
+     "conversions", "purchases", "registrations", "custom conv."),
+     cpr (cost/result, null if 0 results), clicks, ctr,
+     flag:true (optional, red highlight) }
+   ================================================================= */
+const META = [
+{name:"[Example Account A]", id:"act_0000000000001", campaigns:[
+  {name:"Advantage+ Shopping", spend:540.20, result:44, resultLabel:"purchases", cpr:12.28, clicks:1980, ctr:3.30},
+  {name:"Post Boost", spend:60.00, result:0, resultLabel:"conversions", cpr:null, clicks:210, ctr:1.10},
+]},
+{name:"[Example Account B — zero delivery]", id:"act_0000000000002", campaigns:[], zeroDelivery:true},
+{name:"[Example Account C]", id:"act_0000000000003", campaigns:[
+  {name:"Leads - Website", spend:390.10, result:9, resultLabel:"custom conv.", cpr:43.34, clicks:640, ctr:2.90, flag:true, flagNote:"[why this row is flagged]"},
+]},
+];
+
+/* =================================================================
+   TIKTOK — one object per advertiser account. Replace with the day's
+   real pull.
+   Schema per account: { name, id, campaigns:[...] }
+   Schema per campaign: { name, type: "followers"|"booking", spend,
+     impressions, result, resultLabel (e.g. "follows", "leads"),
+     cpr (cost/result, null if 0 results) }
+   type MUST always be set — "followers" for Follow/engagement-growth
+   objective campaigns, "booking" for reservation/lead campaigns.
+   ================================================================= */
+const TIKTOK = [
+{name:"[Example Account A]", id:"0000000000000000001", campaigns:[
+  {name:"Followers Growth", type:"followers", spend:42.10, impressions:9200, result:48, resultLabel:"follows", cpr:0.88},
+]},
+{name:"[Example Account B]", id:"0000000000000000002", campaigns:[
+  {name:"Book Reservations", type:"booking", spend:180.60, impressions:76000, result:16, resultLabel:"leads", cpr:11.29},
+]},
+];
+
+/* ================= render helpers (do not modify) ================= */
+function sum(arr, f){return arr.reduce((a,c)=>a+f(c),0);}
+function acctTotal(a){return sum(a.campaigns, c=>c.spend);}
+
+function googleCard(a){
+  const rows = a.campaigns.map(c=>{
+    const cls = c.paused ? 'row-paused' : (c.flag ? 'row-flag' : '');
+    const tag = c.paused ? '<span class="tag paused">Paused, still spending</span>' : (c.flag ? '<span class="tag flag">Check this</span>' : '');
+    return `<tr class="${cls}"><td class="name">${c.name}${tag}</td>
+      <td class="num mono">${fmtMoney(c.spend)}</td>
+      <td class="num mono">${fmtNum(c.conv)}</td>
+      <td class="num cpr">${c.cpc==null?'<span class="pill dash">—</span>':`<span class="pill">${fmtMoney(c.cpc)}</span>`}</td>
+      <td class="num mono">${fmtNum(c.clicks)}</td>
+      <td class="num mono">${fmtCtr(c.ctr)}</td></tr>`;
+  }).join('');
+  const nd = a.noDelivery.length ? `<div class="no-delivery"><b>No delivery this window</b>${a.noDelivery.map(n=>n.p?`<span class="p">${n.n} (paused)</span>`:n.n).join(', ')}</div>` : '';
+  return `<div class="card">
+    <div class="card-head">
+      <div><h3>${a.name}</h3><span class="acc-id">${a.id}</span></div>
+      <div class="card-total">${fmtMoney(acctTotal(a))}<small>30-day spend</small></div>
+    </div>
+    <div style="overflow-x:auto"><table class="camp">
+      <thead><tr><th>Campaign</th><th class="num">Spend</th><th class="num">Conv.</th><th class="num">Cost/Conv</th><th class="num">Clicks</th><th class="num">CTR</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    ${nd}
+  </div>`;
+}
+
+function metaCard(a){
+  if(a.zeroDelivery){
+    return `<div class="card empty-card"><div class="card-head"><div><h3>${a.name}</h3><span class="acc-id">${a.id}</span></div></div><div class="zero-line">Zero delivery this window.</div></div>`;
+  }
+  const rows = a.campaigns.map(c=>{
+    const cls = c.flag ? 'row-flag' : '';
+    const tag = c.flag ? '<span class="tag flag">Check this</span>' : '';
+    return `<tr class="${cls}"><td class="name">${c.name}${tag}</td>
+      <td class="num mono">${fmtMoney(c.spend)}</td>
+      <td class="num mono">${fmtNum(c.result)}<span class="result-label">${c.resultLabel}</span></td>
+      <td class="num cpr">${c.cpr==null?'<span class="pill dash">—</span>':`<span class="pill">${fmtMoney(c.cpr)}</span>`}</td>
+      <td class="num mono">${fmtNum(c.clicks)}</td>
+      <td class="num mono">${fmtCtr(c.ctr)}</td></tr>`;
+  }).join('');
+  return `<div class="card">
+    <div class="card-head">
+      <div><h3>${a.name}</h3><span class="acc-id">${a.id}</span></div>
+      <div class="card-total">${fmtMoney(acctTotal(a))}<small>30-day spend</small></div>
+    </div>
+    <div style="overflow-x:auto"><table class="camp">
+      <thead><tr><th>Campaign</th><th class="num">Spend</th><th class="num">Result</th><th class="num">Cost/Result</th><th class="num">Clicks</th><th class="num">CTR</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function tiktokCard(a){
+  const rows = a.campaigns.map(c=>{
+    const typeTag = c.type==='followers' ? '<span class="tt-type followers">Followers</span>' : '<span class="tt-type booking">Booking/Reservation</span>';
+    return `<tr><td class="name">${c.name}<br>${typeTag}</td>
+      <td class="num mono">${fmtMoney(c.spend)}</td>
+      <td class="num mono">${fmtNum(c.impressions)}</td>
+      <td class="num mono">${fmtNum(c.result)}<span class="result-label">${c.resultLabel}</span></td>
+      <td class="num cpr">${c.cpr==null?'<span class="pill dash">—</span>':`<span class="pill">${fmtMoney(c.cpr)}</span>`}</td></tr>`;
+  }).join('');
+  return `<div class="card">
+    <div class="card-head">
+      <div><h3>${a.name}</h3><span class="acc-id">${a.id}</span></div>
+      <div class="card-total">${fmtMoney(acctTotal(a))}<small>7-day spend</small></div>
+    </div>
+    <div style="overflow-x:auto"><table class="camp">
+      <thead><tr><th>Campaign</th><th class="num">Spend</th><th class="num">Impr.</th><th class="num">Result</th><th class="num">Cost/Result</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ================= mount (do not modify) ================= */
+document.getElementById('platform-google').innerHTML = `
+  <div class="platform-head">
+    <span class="platform-badge" style="--pf-color:var(--google);--pf-soft:var(--google-soft)">Google Ads</span>
+    <h2>Search &amp; PMax delivery</h2>
+    <span class="platform-meta">30-day window · ${GOOGLE.length} accounts · ex. Fire Defence</span>
+  </div>
+  <div class="grid" style="--pf-color:var(--google);--pf-soft:var(--google-soft)">${GOOGLE.map(googleCard).join('')}</div>
+`;
+
+document.getElementById('platform-meta').innerHTML = `
+  <div class="platform-head">
+    <span class="platform-badge" style="--pf-color:var(--meta);--pf-soft:var(--meta-soft)">Meta Ads</span>
+    <h2>Facebook &amp; Instagram delivery</h2>
+    <span class="platform-meta">30-day window · ${META.length} accounts · ex. Glasservice Noord, duplicate Oran &amp; Just Dai accounts</span>
+  </div>
+  <div class="grid" style="--pf-color:var(--meta);--pf-soft:var(--meta-soft)">${META.map(metaCard).join('')}</div>
+`;
+
+document.getElementById('platform-tiktok').innerHTML = `
+  <div class="platform-head">
+    <span class="platform-badge" style="--pf-color:var(--tiktok);--pf-soft:var(--tiktok-soft)">TikTok Ads</span>
+    <h2>Follower growth &amp; booking delivery</h2>
+    <span class="platform-meta">7-day window · ${TIKTOK.length} accounts</span>
+  </div>
+  <div class="grid" style="--pf-color:var(--tiktok);--pf-soft:var(--tiktok-soft)">${TIKTOK.map(tiktokCard).join('')}</div>
+`;
+
+const gTotal = sum(GOOGLE, acctTotal);
+const mTotal = sum(META, acctTotal);
+const tTotal = sum(TIKTOK, acctTotal);
+
+document.getElementById('statRow').innerHTML = `
+  <div class="stat-tile" style="--tile-color:var(--google)"><div class="label">Google · 30d</div><div class="value">${fmtMoney(gTotal)}<small>${GOOGLE.length} accts</small></div></div>
+  <div class="stat-tile" style="--tile-color:var(--meta)"><div class="label">Meta · 30d</div><div class="value">${fmtMoney(mTotal)}<small>${META.length} accts</small></div></div>
+  <div class="stat-tile" style="--tile-color:var(--tiktok)"><div class="label">TikTok · 7d</div><div class="value">${fmtMoney(tTotal)}<small>${TIKTOK.length} accts</small></div></div>
+  <div class="stat-tile" style="--tile-color:var(--critical)"><div class="label">Flagged</div><div class="value">[N]<small>items</small></div></div>
+`;
+
+/* Replace with the day's 2-4 "Worth a look" bullets. Pair each with a
+   flag:true row above so the highlighted row and the bullet match up. */
+document.getElementById('flagList').innerHTML = `
+  <li><b>[Account (Platform)]</b> — [what's unusual and the numbers behind it].</li>
+  <li><b>[Account (Platform)]</b> — [what's unusual and the numbers behind it].</li>
+`;
+</script>
